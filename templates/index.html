@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <title>Stock Predictor</title>
+</head>
+<body>
+    <nav>
+        <h1><a href="/">Stock Predictor</a></h1>
+        <h3 id="simulation"><a href="/simulation">Go to Stock Simulation</a></h3>
+    </nav>
+    <center>
+        <form>
+            <label for="ticker">Ticker Symbol: </label>
+            <select name="ticker" id="ticker">
+                <option value="AAPL">APPL</option>
+                <option value="AMZN">AMZN</option>
+                <option value="GOOGL">GOOGL</option>
+                <option value="MSFT">MSFT</option>
+                <option value="NVDA">NVDA</option>
+            </select>
+            <label for="date">Predict until: </label>
+            <input id="date" type="date" value="" min="" max="" />
+        </form>
+    </center>
+    <div id="graph-prediction">
+        <!-- TODO: Load prediction graph -->
+    </div>
+    <!-- Try to import info from flask ? -->
+    <p id="date">{{ date }}</p>
+</body>
+</html>

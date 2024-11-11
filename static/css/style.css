@@ -1,0 +1,44 @@
+@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
+
+* {
+    font-family: "Libre Caslon Text", serif;
+}
+
+nav {
+    display: flex;
+    justify-content: space-between;
+}
+
+a, h3 {
+    text-decoration: none;
+    color: black;
+    margin-left: 2em;
+    margin-right: 2em;
+}
+
+#simulation {
+    display: inline-block;
+    position: relative;
+}
+
+#simulation::after {
+    content: '';
+    position: absolute;
+    width: 75%;
+    transform: scaleX(0);
+    height: 2px;
+    bottom: 0;
+    left: 2em;
+    background-color: silver;
+    transform-origin: bottom right;
+    transition: transform 0.25s ease-out;
+}
+  
+#simulation:hover::after {
+    transform: scaleX(1);
+    transform-origin: bottom left;
+}
+
+form label {
+    margin-left: 2em;
+}

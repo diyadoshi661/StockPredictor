@@ -1,0 +1,5 @@
+# Flask files
+Lib/
+Scripts
+__pycache__/
+pyvenv.cfg
