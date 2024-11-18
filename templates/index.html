@@ -1,16 +1,12 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="../static/css/style.css">
-    <title>Stock Predictor</title>
-</head>
-<body>
-    <nav>
-        <h1><a href="/">Stock Predictor</a></h1>
-        <h3 id="simulation"><a href="/simulation">Go to Stock Simulation</a></h3>
-    </nav>
+{% extends 'base.html' %}
+
+{% block title %}Stock Predictor{% endblock %}
+
+{% block nav %}
+    <h3 id="simulation"><a href="/simulation">Go to Stock Simulation</a></h3>
+{% endblock %}
+
+{% block content %}
     <center>
         <form>
             <label for="ticker">Ticker Symbol: </label>
@@ -22,13 +18,10 @@
                 <option value="NVDA">NVDA</option>
             </select>
             <label for="date">Predict until: </label>
-            <input id="date" type="date" value="" min="" max="" />
+            <input id="date" type="date" value="{{ date }}" min="{{ date }}" max="{{ max_date }}" />
         </form>
     </center>
     <div id="graph-prediction">
-        <!-- TODO: Load prediction graph -->
+        <img src="data:image/png;base64,{{ prediction_plot }}">
     </div>
-    <!-- Try to import info from flask ? -->
-    <p id="date">{{ date }}</p>
-</body>
-</html>
+{% endblock %}
