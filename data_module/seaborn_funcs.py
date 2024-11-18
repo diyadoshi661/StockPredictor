@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import io
 import base64
 
+# Import database functions
+from .database_funcs import *
+
 # Imports for data
 import yfinance as yf
 
@@ -12,10 +15,17 @@ def prediction_graph(ticker):
     img = io.BytesIO()
 
     # Plot actual trend
-    apple_data = yf.download('AAPL', start='2010-01-01')
-    apple_df = apple_data.reset_index()
-    apple_df['Days'] = (apple_df['Date'] - apple_df['Date'].min()).dt.days # Convert date to days
-    plt.plot(apple_df["Days"], apple_df["Close"])
+    conn = get_predictor_db()
+    c = conn.cursor()
+
+    c.execute("SELECT days FROM GraphData WHERE ticker = 'APPL' AND actual = 't'")
+    days = c.fetchall()
+    c.execute("SELECT value FROM GraphData WHERE ticker = 'APPL' AND actual = 't'")
+    values = c.fetchall()
+
+    plt.plot(days, values)
+
+    conn.close()
 
     # Plot predicted trend
     y = [1,2,3,4,5]
