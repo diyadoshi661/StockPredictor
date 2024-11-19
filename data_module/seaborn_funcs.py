@@ -11,16 +11,16 @@ from .database_funcs import *
 import yfinance as yf
 
 def prediction_graph(ticker):
-    """Creates a graph of the actual and predicted trend for the given ticker"""
+    """Returns a graph of the actual and predicted trend for the given ticker"""
     img = io.BytesIO()
 
     # Plot actual trend
     conn = get_predictor_db()
     c = conn.cursor()
 
-    c.execute("SELECT days FROM GraphData WHERE ticker = 'APPL' AND actual = 't'")
+    c.execute(f"SELECT days FROM GraphData WHERE ticker = '{ ticker }' AND actual = 't'")
     days = c.fetchall()
-    c.execute("SELECT value FROM GraphData WHERE ticker = 'APPL' AND actual = 't'")
+    c.execute(f"SELECT value FROM GraphData WHERE ticker = '{ ticker }' AND actual = 't'")
     values = c.fetchall()
 
     plt.plot(days, values)

@@ -3,13 +3,41 @@
 {% block title %}Stock Simulator{% endblock %}
 
 {% block nav %}
-    <h3 id="login">Login</h3>
+    <h3 id="login" onclick="(() => {alert ('TODO: Make login')})()">Login</h3>
 {% endblock %}
 
 {% block content %}
     <div id="simulator">
-        <!-- TODO: Create simulator 
-                User should see screen to login if not already logged in
-                Else should see statistics -->
+        <center>
+            <h4>Username's Profile</h4>
+            <div id="simulator-content">
+                <div id="user-assets">
+                    <p>Current Balance: $1000.00</p>
+                    <p>Current Asssets:</p>
+                    <!--
+                    {% for a in assets %}
+                        <p>\t{{ a }}</p>
+                    {% endfor %}
+                    -->
+                </div>
+                <div id="user-actions">
+                    <form>
+                        <label for="ticker">Ticker Symbol: </label>
+                        <select name="ticker" id="ticker">
+                            <option value="AAPL">AAPL</option>
+                            <option value="AMZN">AMZN</option>
+                            <option value="GOOGL">GOOGL</option>
+                            <option value="MSFT">MSFT</option>
+                            <option value="NVDA">NVDA</option>
+                        </select>
+                        <p>Price: $--.--</p>
+                        <div id="action-buttons">
+                            <button>Buy</button>
+                            <button>Sell</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </center>
     </div>
 {% endblock %}

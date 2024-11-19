@@ -11,7 +11,7 @@
         <form>
             <label for="ticker">Ticker Symbol: </label>
             <select name="ticker" id="ticker">
-                <option value="AAPL">APPL</option>
+                <option value="AAPL">AAPL</option>
                 <option value="AMZN">AMZN</option>
                 <option value="GOOGL">GOOGL</option>
                 <option value="MSFT">MSFT</option>
@@ -20,8 +20,31 @@
             <label for="date">Predict until: </label>
             <input id="date" type="date" value="{{ date }}" min="{{ date }}" max="{{ max_date }}" />
         </form>
+        <div id="graph-prediction">
+            <img id="prediction-graph" src="data:image/png;base64,{{ prediction_plot }}">
+        </div>
     </center>
-    <div id="graph-prediction">
-        <img src="data:image/png;base64,{{ prediction_plot }}">
-    </div>
+    <script type="text/javascript">
+        (() => {
+            /* Sends ticker to server to return new graph */
+            const getGraph = async (value) => {
+                const data = await fetch('/change-graph', {
+                    method: 'post',
+                    body: JSON.stringify({ ticker: value })
+                }).then(res => res.ok && res.json());
+                return data;
+            }
+
+            /* Add listeners to refresh graph */
+            ticker.addEventListener('change', async function() {
+                try {
+                    const newplot = await getGraph(this.value);
+                    const graph = document.getElementById('prediction-graph');
+                    graph.src = "data:image/png;base64," + newplot;
+                } catch (err) {
+                    console.log(err);
+                }
+            })
+        })();
+    </script>
 {% endblock %}
