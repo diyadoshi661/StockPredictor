@@ -1,6 +1,10 @@
 # Imports for graphing
 import seaborn as sns
+import matplotlib
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
+
+# Imports for image generation
 import io
 import base64
 
@@ -27,10 +31,7 @@ def prediction_graph(ticker):
 
     conn.close()
 
-    # Plot predicted trend
-    y = [1,2,3,4,5]
-    x = [0,2,1,3,4]
-    plt.plot(x,y)
+    # TODO: Plot predicted trend
 
     plt.savefig(img, format='png')
     plt.close()

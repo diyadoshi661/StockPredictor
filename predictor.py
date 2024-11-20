@@ -6,6 +6,15 @@ from data_module import *
 # Other imports
 from datetime import date, timedelta
 
+def get_graph_link(ticker):
+    """Fetches link to prediction graph for specified ticker from database"""
+    conn = get_predictor_db()
+    c = conn.cursor()
+    c.execute(f"SELECT link FROM GraphLink WHERE ticker = '{ ticker }'")
+    prediction_graph = c.fetchall()
+    conn.close()
+    return prediction_graph[0][0]
+
 # Create application
 app = Flask(__name__)
 
@@ -16,9 +25,7 @@ def index():
     today = date.today()
     max_date = today + timedelta(days=1)
 
-    prediction_plot = prediction_graph("AAPL")
-
-    return render_template('index.html', date=today, max_date=max_date, prediction_plot=prediction_plot)
+    return render_template('index.html', date=today, max_date=max_date, prediction_graph=get_graph_link('AAPL'))
 
 @app.route('/simulation')
 def simulation():
@@ -31,8 +38,8 @@ def change_graph():
     #       JSON does not always return promise and has thread problems
     try:
         ticker = request.get_json(force=True).get('ticker')
-        prediction_plot = prediction_graph(ticker)
+        prediction_graph = get_graph_link(ticker)
     except Exception as ex:
         print(ex)
     finally:
-        return jsonify(prediction_plot)
+        return jsonify(prediction_graph)
