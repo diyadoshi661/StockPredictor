@@ -43,3 +43,8 @@ def change_graph():
         print(ex)
     finally:
         return jsonify(prediction_graph)
+    
+@app.errorhandler(404)
+def page_not_found(e):
+    print('ENETERED 404')
+    return render_template('404.html'), 404

@@ -18,10 +18,10 @@ def prediction_graph(ticker):
     """Returns a graph of the actual and predicted trend for the given ticker"""
     img = io.BytesIO()
 
-    # Plot actual trend
     conn = get_predictor_db()
     c = conn.cursor()
 
+    # Plot actual trend
     c.execute(f"SELECT days FROM GraphData WHERE ticker = '{ ticker }' AND actual = 't'")
     days = c.fetchall()
     c.execute(f"SELECT value FROM GraphData WHERE ticker = '{ ticker }' AND actual = 't'")
@@ -29,9 +29,15 @@ def prediction_graph(ticker):
 
     plt.plot(days, values)
 
-    conn.close()
+    # Plot predicted trend
+    c.execute(f"SELECT days FROM GraphData WHERE ticker = '{ ticker }' AND actual = 'f'")
+    days = c.fetchall()
+    c.execute(f"SELECT value FROM GraphData WHERE ticker = '{ ticker }' AND actual = 'f'")
+    values = c.fetchall()
 
-    # TODO: Plot predicted trend
+    plt.plot(days, values)
+
+    conn.close()
 
     plt.savefig(img, format='png')
     plt.close()
