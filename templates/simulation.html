@@ -34,45 +34,61 @@ block content %}
 			</div>
 		</div>
 		{% else %}
-		<div
-			id="login-form"
-			class="container border border-black mt-5 pt-3 pb-3"
-		>
-			<form class="col">
+		<div id="login-form" class="{% if signup == True %}hidden{% endif %} container border border-black mt-5 pt-3 pb-3">
+			<form class="col" method="GET" action="{{ url_for('simulation') }}">
 				<div class="row m-3">
 					<label class="col" for="username-login">Username</label>
-					<input class="col" id="username-login" />
+					<input class="col" id="username-login" name="username-login" />
 				</div>
 				<div class="row m-3">
 					<label class="col" for="password-login">Password</label>
-					<input class="col" id="password-login" type="password" />
+					<input
+						class="col"
+						id="password-login"
+						name="password-login"
+						type="password"
+					/>
 				</div>
+				<button type="submit">Login</button>
 			</form>
-			<button>Login</button>
 			<p id="switch-form-msg">
 				Don't have an account? Sign up
 				<span id="switch-form" onclick="toggle_forms()">here</span>.
 			</p>
 		</div>
+
 		<div
 			id="signup-form"
-			class="hidden container border border-black mt-5 pt-3 pb-3"
+			class="{% if signup == False %}hidden{% endif %} container border border-black mt-5 pt-3 pb-3"
 		>
-			<form class="col">
+			<form class="col" method="POST" action="{{ url_for('signup') }}">
+                {% for message in get_flashed_messages() %}
+                    <div class="alert alert-danger">{{ message }}</div>
+                {% endfor %}
 				<div class="row m-3">
 					<label class="col" for="username-signup">Username</label>
-					<input class="col" id="username-signup" />
+					<input class="col" id="username-signup" name="username-signup" />
 				</div>
 				<div class="row m-3">
 					<label class="col" for="password-signup">Password</label>
-					<input class="col" id="password-signup" type="password" />
+					<input
+						class="col"
+						id="password-signup"
+						name="password-signup"
+						type="password"
+					/>
 				</div>
 				<div class="row m-3">
 					<label class="col" for="password-again">Retype Password</label>
-					<input class="col" id="password-again" type="password" />
+					<input
+						class="col"
+						id="password-again"
+						name="password-again"
+						type="password"
+					/>
 				</div>
+				<button type="submit">Signup</button>
 			</form>
-			<button>Signup</button>
 			<p id="switch-form-msg">
 				Already have an account? Login
 				<span id="switch-form" onclick="toggle_forms()">here</span>.

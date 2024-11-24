@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, render_template, request, jsonify, session, flash, redirect, url_for
 
 # Import custom-made modules
 from data_module import *
@@ -17,6 +17,7 @@ def get_graph_link(ticker):
 
 # Create application
 app = Flask(__name__)
+# TODO: Update secret key and create env file
 app.secret_key = '98a01296f190c59a173a988b90148a22ec7c5100589a6faf8b246973b563f577'
 
 # Create all routes
@@ -32,8 +33,8 @@ def index():
 @app.route('/simulation')
 def simulation():
     if 'username' in session:
-        return render_template('simulation.html', logged_in=True)
-    return render_template('simulation.html', logged_in=False)
+        return render_template('simulation.html', logged_in=True, signup=False)
+    return render_template('simulation.html', logged_in=False, signup=False)
 
 # Create post methods
 @app.post('/change-graph')
@@ -47,6 +48,24 @@ def change_graph():
         print(ex)
     finally:
         return jsonify(prediction_graph)
+
+@app.post('/signup')
+def signup():
+    username = request.form['username-signup']
+    password = request.form['password-signup']
+    # Check if username and password are valid
+    if len(username) == 0 or len(password) == 0:
+        flash('All fields must be filled')
+        return render_template('simulation.html', logged_in=False, signup=True)
+    conn = get_simulator_db()
+    c = conn.cursor()
+    c.execute(f"SELECT COUNT(*) FROM Users WHERE username = '{ username }'")
+    results = c.fetchall()
+    # Invalid username
+    if results[0][0] > 0:
+        flash("Username is already in use")
+
+    return redirect(url_for('simulation'))
 
 @app.errorhandler(404)
 def page_not_found(e):
