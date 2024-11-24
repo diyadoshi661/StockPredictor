@@ -64,7 +64,12 @@ def signup():
     # Invalid username
     if results[0][0] > 0:
         flash("Username is already in use")
-
+        return render_template('simulation.html', logged_in=False, signup=True)
+    # If everything is OK, create new user
+    c.execute("INSERT INTO Users (username, password) VALUES (?, ?)", tuple([username, password]))
+    conn.commit()
+    conn.close()
+    # TODO: Create session cookies for user
     return redirect(url_for('simulation'))
 
 @app.errorhandler(404)
