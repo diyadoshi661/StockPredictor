@@ -1,43 +1,95 @@
-{% extends 'base.html' %}
-
-{% block title %}Stock Simulator{% endblock %}
-
-{% block nav %}
-    <h3 id="login" onclick="(() => {alert ('TODO: Make login')})()">Login</h3>
-{% endblock %}
-
-{% block content %}
-    <div id="simulator">
-        <center>
-            <h4>Username's Profile</h4>
-            <div id="simulator-content">
-                <div id="user-assets">
-                    <p>Current Balance: $1000.00</p>
-                    <p>Current Asssets:</p>
-                    <!--
-                    {% for a in assets %}
-                        <p>\t{{ a }}</p>
-                    {% endfor %}
-                    -->
-                </div>
-                <div id="user-actions">
-                    <form>
-                        <label for="ticker">Ticker Symbol: </label>
-                        <select name="ticker" id="ticker">
-                            <option value="AAPL">AAPL</option>
-                            <option value="AMZN">AMZN</option>
-                            <option value="GOOGL">GOOGL</option>
-                            <option value="MSFT">MSFT</option>
-                            <option value="NVDA">NVDA</option>
-                        </select>
-                        <p>Price: $--.--</p>
-                        <div id="action-buttons">
-                            <button>Buy</button>
-                            <button>Sell</button>
-                        </div>
-                    </form>
-                </div>
-            </div>
-        </center>
-    </div>
+{% extends 'base.html' %} {% block title %}Stock Simulator{% endblock %} {%
+block content %}
+<div id="simulator">
+	<br />
+	<center>
+		{% if logged_in == True %}
+		<h4>Username's Profile</h4>
+		<div id="simulator-content">
+			<div id="user-assets">
+				<p>Current Balance: $1000.00</p>
+				<p>Current Asssets:</p>
+				<!--
+                        {% for a in assets %}
+                            <p>\t{{ a }}</p>
+                        {% endfor %}
+                        -->
+			</div>
+			<div id="user-actions">
+				<form>
+					<label for="ticker">Ticker Symbol: </label>
+					<select name="ticker" id="ticker">
+						<option value="AAPL">AAPL</option>
+						<option value="AMZN">AMZN</option>
+						<option value="GOOGL">GOOGL</option>
+						<option value="MSFT">MSFT</option>
+						<option value="NVDA">NVDA</option>
+					</select>
+					<p>Price: $--.--</p>
+					<div id="action-buttons">
+						<button>Buy</button>
+						<button>Sell</button>
+					</div>
+				</form>
+			</div>
+		</div>
+		{% else %}
+		<div
+			id="login-form"
+			class="container border border-black mt-5 pt-3 pb-3"
+		>
+			<form class="col">
+				<div class="row m-3">
+					<label class="col" for="username-login">Username</label>
+					<input class="col" id="username-login" />
+				</div>
+				<div class="row m-3">
+					<label class="col" for="password-login">Password</label>
+					<input class="col" id="password-login" type="password" />
+				</div>
+			</form>
+			<button>Login</button>
+			<p id="switch-form-msg">
+				Don't have an account? Sign up
+				<span id="switch-form" onclick="toggle_forms()">here</span>.
+			</p>
+		</div>
+		<div
+			id="signup-form"
+			class="hidden container border border-black mt-5 pt-3 pb-3"
+		>
+			<form class="col">
+				<div class="row m-3">
+					<label class="col" for="username-signup">Username</label>
+					<input class="col" id="username-signup" />
+				</div>
+				<div class="row m-3">
+					<label class="col" for="password-signup">Password</label>
+					<input class="col" id="password-signup" type="password" />
+				</div>
+				<div class="row m-3">
+					<label class="col" for="password-again">Retype Password</label>
+					<input class="col" id="password-again" type="password" />
+				</div>
+			</form>
+			<button>Signup</button>
+			<p id="switch-form-msg">
+				Already have an account? Login
+				<span id="switch-form" onclick="toggle_forms()">here</span>.
+			</p>
+		</div>
+		{% endif %}
+	</center>
+</div>
+<script>
+	function toggle_forms() {
+		document.getElementById("login-form").classList.toggle("hidden");
+		document.getElementById("signup-form").classList.toggle("hidden");
+		// Reset values of input fields
+		var inputs = document.getElementsByTagName("input");
+		for (let i = 0; i < inputs.length; i++) {
+			inputs[i].value = "";
+		}
+	}
+</script>
 {% endblock %}

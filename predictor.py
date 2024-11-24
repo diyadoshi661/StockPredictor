@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify
+from flask import Flask, render_template, request, jsonify, session
 
 # Import custom-made modules
 from data_module import *
@@ -17,19 +17,23 @@ def get_graph_link(ticker):
 
 # Create application
 app = Flask(__name__)
+app.secret_key = '98a01296f190c59a173a988b90148a22ec7c5100589a6faf8b246973b563f577'
 
 # Create all routes
 @app.route('/')
 def index():
     # Dates that can be picked by user to predict up to
     today = date.today()
-    max_date = today + timedelta(days=1)
+    min_date = today + timedelta(days=1)
+    max_date = today + timedelta(days=2)
 
-    return render_template('index.html', date=today, max_date=max_date, prediction_graph=get_graph_link('AAPL'))
+    return render_template('index.html', date=min_date, max_date=max_date, prediction_graph=get_graph_link('AAPL'))
 
 @app.route('/simulation')
 def simulation():
-    return render_template('simulation.html')
+    if 'username' in session:
+        return render_template('simulation.html', logged_in=True)
+    return render_template('simulation.html', logged_in=False)
 
 # Create post methods
 @app.post('/change-graph')
@@ -43,8 +47,7 @@ def change_graph():
         print(ex)
     finally:
         return jsonify(prediction_graph)
-    
+
 @app.errorhandler(404)
 def page_not_found(e):
-    print('ENETERED 404')
     return render_template('404.html'), 404

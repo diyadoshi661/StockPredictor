@@ -3,27 +3,28 @@
 {% block title %}Stock Predictor{% endblock %}
 
 {% block nav %}
-    <h3 id="simulation"><a href="/simulation">Go to Stock Simulation</a></h3>
+    <h4 id="simulation"><a href="/simulation">Stock Simulation &#8594;</a></h4>
 {% endblock %}
 
 {% block content %}
-    <center>
-        <form>
+    <div id="choose-ticker">
+        <br />
+        <form id="ticker-form">
             <label for="ticker">Ticker Symbol: </label>
-            <select name="ticker" id="ticker">
+            <select id="ticker">
                 <option value="AAPL">AAPL</option>
                 <option value="AMZN">AMZN</option>
                 <option value="GOOGL">GOOGL</option>
                 <option value="MSFT">MSFT</option>
                 <option value="NVDA">NVDA</option>
             </select>
-            <label for="date">Predict until: </label>
+            <label style="margin-left: 5em" for="date">Predict Until: </label>
             <input id="date" type="date" value="{{ date }}" min="{{ date }}" max="{{ max_date }}" />
         </form>
-        <div id="graph-prediction">
-            <img id="prediction-graph" src="data:image/png;base64,{{ prediction_graph }}">
-        </div>
-    </center>
+    </div>
+    <div id="graph-prediction">
+        <img id="prediction-graph" src="data:image/png;base64,{{ prediction_graph }}">
+    </div>
     <script type="text/javascript">
         (() => {
             /* Sends ticker to server to return new graph */

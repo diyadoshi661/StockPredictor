@@ -1,44 +1,84 @@
-@import url('https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&display=swap");
 
 * {
-    font-family: "Libre Caslon Text", serif;
+	font-family: "Libre Caslon Text", serif;
 }
 
-nav {
-    display: flex;
-    justify-content: space-between;
+/* Design navbar */
+nav *:hover {
+	text-decoration: none;
+	color: black;
 }
 
-a, h3 {
-    text-decoration: none;
-    color: black;
-    margin-left: 2em;
-    margin-right: 2em;
+nav a {
+	text-decoration: none;
+	color: black;
+	margin-left: 2em;
+	margin-right: 2em;
 }
 
 #simulation {
-    display: inline-block;
-    position: relative;
+	display: inline-block;
+	position: relative;
 }
 
 #simulation::after {
-    content: '';
-    position: absolute;
-    width: 75%;
-    transform: scaleX(0);
-    height: 2px;
-    bottom: 0;
-    left: 2em;
-    background-color: silver;
-    transform-origin: bottom right;
-    transition: transform 0.25s ease-out;
-}
-  
-#simulation:hover::after {
-    transform: scaleX(1);
-    transform-origin: bottom left;
+	content: "";
+	position: absolute;
+	width: 70%;
+	transform: scaleX(0);
+	height: 2px;
+	bottom: 0;
+	left: 2em;
+	background-color: silver;
+	transform-origin: bottom right;
+	transition: transform 0.25s ease-out;
 }
 
-form label {
-    margin-left: 2em;
+#simulation:hover::after {
+	transform: scaleX(1);
+	transform-origin: bottom left;
+}
+
+/* Design page content */
+#page-contents {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	width: 100%;
+}
+
+/* Design index page */
+#ticker-form {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+}
+
+#ticker-form label {
+	margin-right: 1em;
+	margin-top: 0.5em;
+}
+
+/* Design login and signup forms */
+#login-form label,
+#signup-form label {
+	margin-right: 1em;
+}
+
+#switch-form {
+	cursor: pointer;
+}
+
+#switch-form:hover {
+	color: grey;
+}
+
+#switch-form-msg {
+	font-size: 80%;
+	line-height: 3;
+}
+
+.hidden {
+	display: none;
 }
