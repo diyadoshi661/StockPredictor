@@ -14,28 +14,22 @@ from .database_funcs import *
 # Imports for data
 import yfinance as yf
 
-def prediction_graph(ticker):
-    """Returns a graph of the actual and predicted trend for the given ticker"""
+def stock_graph(ticker):
+    """Returns a graph of the actual trend for the given ticker"""
     img = io.BytesIO()
 
     conn = get_predictor_db()
     c = conn.cursor()
 
-    # Plot actual trend
-    c.execute(f"SELECT days FROM GraphData WHERE ticker = '{ ticker }' AND actual = 't'")
+    # Plot stock trend
+    c.execute(f"SELECT days FROM GraphData WHERE ticker = '{ ticker }'")
     days = c.fetchall()
-    c.execute(f"SELECT value FROM GraphData WHERE ticker = '{ ticker }' AND actual = 't'")
+    c.execute(f"SELECT value FROM GraphData WHERE ticker = '{ ticker }'")
     values = c.fetchall()
 
     plt.plot(days, values)
 
-    # Plot predicted trend
-    c.execute(f"SELECT days FROM GraphData WHERE ticker = '{ ticker }' AND actual = 'f'")
-    days = c.fetchall()
-    c.execute(f"SELECT value FROM GraphData WHERE ticker = '{ ticker }' AND actual = 'f'")
-    values = c.fetchall()
-
-    plt.plot(days, values)
+    plt.show()
 
     conn.close()
 

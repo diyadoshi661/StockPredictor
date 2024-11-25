@@ -1,111 +1,107 @@
-{% extends 'base.html' %} {% block title %}Stock Simulator{% endblock %} {%
-block content %}
-<div id="simulator">
-	<br />
-	<center>
-		{% if logged_in == True %}
-		<h4>Username's Profile</h4>
-		<div id="simulator-content">
-			<div id="user-assets">
-				<p>Current Balance: $1000.00</p>
-				<p>Current Asssets:</p>
-				<!--
-                        {% for a in assets %}
-                            <p>\t{{ a }}</p>
-                        {% endfor %}
-                        -->
-			</div>
-			<div id="user-actions">
-				<form>
-					<label for="ticker">Ticker Symbol: </label>
-					<select name="ticker" id="ticker">
-						<option value="AAPL">AAPL</option>
-						<option value="AMZN">AMZN</option>
-						<option value="GOOGL">GOOGL</option>
-						<option value="MSFT">MSFT</option>
-						<option value="NVDA">NVDA</option>
-					</select>
-					<p>Price: $--.--</p>
-					<div id="action-buttons">
-						<button>Buy</button>
-						<button>Sell</button>
-					</div>
-				</form>
-			</div>
-		</div>
-		{% else %}
-		<div id="login-form" class="{% if signup == True %}hidden{% endif %} container border border-black mt-5 pt-3 pb-3">
-			<form class="col" method="GET" action="{{ url_for('simulation') }}">
-				<div class="row m-3">
-					<label class="col" for="username-login">Username</label>
-					<input class="col" id="username-login" name="username-login" />
-				</div>
-				<div class="row m-3">
-					<label class="col" for="password-login">Password</label>
-					<input
-						class="col"
-						id="password-login"
-						name="password-login"
-						type="password"
-					/>
-				</div>
-				<button type="submit">Login</button>
-			</form>
-			<p id="switch-form-msg">
-				Don't have an account? Sign up
-				<span id="switch-form" onclick="toggle_forms()">here</span>.
-			</p>
-		</div>
+{% extends 'base.html' %} 
 
-		<div
-			id="signup-form"
-			class="{% if signup == False %}hidden{% endif %} container border border-black mt-5 pt-3 pb-3"
-		>
-			<form class="col" method="POST" action="{{ url_for('signup') }}">
-                {% for message in get_flashed_messages() %}
-                    <div class="alert alert-danger">{{ message }}</div>
-                {% endfor %}
-				<div class="row m-3">
-					<label class="col" for="username-signup">Username</label>
-					<input class="col" id="username-signup" name="username-signup" />
+{% block title %}Stock Simulator{% endblock %} 
+
+{% block nav %}
+<h4 id="logout"><a href="/logout">Logout</a></h4>
+{% endblock %} 
+
+{% block content %}
+<div id="simulator">
+	<center>
+		<br />
+		<h4>{{ username }}'s Profile</h4>
+		<br />
+		<div id="simulator-content" class="container">
+			<div id="user-info" class="row">
+				<div
+					id="user-assets"
+					class="col border border-black m-3 pt-3 pb-3 pl-5"
+					style="width: 30em; max-height: 200px;"
+				>
+					<p class="row mb-0">Current Balance: ${{ balance }}</p>
+					<p class="row mb-0">Current Assets:</p>
+					{% for a in assets %}
+						<p class="row mb-0">&emsp;&emsp;{{ a.stock_symbol }}: {{ a.quantity_owned }}</p>
+					{% endfor %}
 				</div>
-				<div class="row m-3">
-					<label class="col" for="password-signup">Password</label>
-					<input
-						class="col"
-						id="password-signup"
-						name="password-signup"
-						type="password"
-					/>
+				<div
+					id="user-transactions"
+					class="col border border-black m-3 pt-3 pb-3 pl-5 pre-scrollable"
+					style="width: 30em; max-height: 200px"
+				>
+					{% if history|length == 0 %}
+						<p class="row">No Previous Transactions</p>
+					{% else %}
+						<p class="row">Transaction History:</p>
+						{% for t in history | reverse %}
+							<p class="row">{{ t.time }} >&emsp;{{ t.action }} {{ t.stock_symbol }} x{{ t.quantity }} at ${{ t.price | round(2) }}</p>
+						{% endfor %} {% endif %}
 				</div>
-				<div class="row m-3">
-					<label class="col" for="password-again">Retype Password</label>
-					<input
-						class="col"
-						id="password-again"
-						name="password-again"
-						type="password"
-					/>
+			</div>
+			<div class="row">
+				<div class="col"></div>
+				<div id="user-actions" class="col border border-black mt-5 p-3">
+					<form class="col" method="POST" action="">
+						{% for message in get_flashed_messages() %}
+							<div class="alert alert-danger">{{ message }}</div>
+						{% endfor %}
+						<label for="ticker">Ticker Symbol: &ensp;</label>
+						<select name="ticker" id="ticker">
+							<option value="AAPL">AAPL</option>
+							<option value="AMZN">AMZN</option>
+							<option value="GOOGL">GOOGL</option>
+							<option value="MSFT">MSFT</option>
+							<option value="NVDA">NVDA</option>
+						</select>
+						<label for="quantity">Quantity: &ensp;</label>
+						<input id="quantity" name="quantity" type="number" value="1" min="1" class="w-25" />
+						<p>Price:  $<span id="price">{{ price | round(2) }}</span></p>
+						<div id="action-buttons">
+							<button type="submit" formaction="{{ url_for('buy') }}" class="rounded mr-1">Buy</button>
+							<button type="submit" formaction="{{ url_for('sell') }}" class="rounded ml-1">Sell</button>
+						</div>
+					</form>
 				</div>
-				<button type="submit">Signup</button>
-			</form>
-			<p id="switch-form-msg">
-				Already have an account? Login
-				<span id="switch-form" onclick="toggle_forms()">here</span>.
-			</p>
+				<div class="col"></div>
+			</div>
 		</div>
-		{% endif %}
 	</center>
 </div>
-<script>
-	function toggle_forms() {
-		document.getElementById("login-form").classList.toggle("hidden");
-		document.getElementById("signup-form").classList.toggle("hidden");
-		// Reset values of input fields
-		var inputs = document.getElementsByTagName("input");
-		for (let i = 0; i < inputs.length; i++) {
-			inputs[i].value = "";
+
+<script type="text/javascript">
+	(() => {
+		/* Sends data to server to return price */
+		const getPrice = async (value) => {
+			const data = await fetch('/get-price', {
+				method: 'post',
+				body: JSON.stringify({ ticker: value })
+			}).then(res => res.ok && res.json());
+			return data;
 		}
-	}
+
+		/* Add listeners to refresh price */
+		ticker.addEventListener('change', async function() {
+			try {
+				const newPrice = await getPrice(this.value);
+				const price = document.getElementById('price');
+				const quantity = document.getElementById('quantity').value;
+				price.innerHTML = (newPrice * quantity).toFixed(2);
+			} catch (err) {
+				console.log(err);
+			}
+		})
+
+		quantity.addEventListener('change', async function() {
+			try {
+				const newPrice = await getPrice(document.getElementById('ticker').value);
+				const price = document.getElementById('price');
+				const quantity = document.getElementById('quantity').value;
+				price.innerHTML = (newPrice * quantity).toFixed(2);
+			} catch (err) {
+				console.log(err);
+			}
+		})
+	})();
 </script>
 {% endblock %}

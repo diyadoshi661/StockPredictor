@@ -18,12 +18,13 @@
                 <option value="MSFT">MSFT</option>
                 <option value="NVDA">NVDA</option>
             </select>
-            <label style="margin-left: 5em" for="date">Predict Until: </label>
-            <input id="date" type="date" value="{{ date }}" min="{{ date }}" max="{{ max_date }}" />
         </form>
     </div>
     <div id="graph-prediction">
         <img id="prediction-graph" src="data:image/png;base64,{{ prediction_graph }}">
+    </div>
+    <div id="predicted-price">
+        <p id="price">Tomorrow's predicted price: $<span id="price-value">{{ predicted_price | round(2) }}</span></p>
     </div>
     <script type="text/javascript">
         (() => {
@@ -36,12 +37,24 @@
                 return data;
             }
 
+            /* Sends data to server to return price */
+            const getPrice = async (value) => {
+                const data = await fetch('/get-predicted-price', {
+                    method: 'post',
+                    body: JSON.stringify({ ticker: value })
+                }).then(res => res.ok && res.json());
+                return data;
+            }
+
             /* Add listeners to refresh graph */
             ticker.addEventListener('change', async function() {
                 try {
                     const newplot = await getGraph(this.value);
+                    const newprice = await getPrice(this.value);
                     const graph = document.getElementById('prediction-graph');
                     graph.src = "data:image/png;base64," + newplot;
+                    const price = document.getElementById('price-value');
+                    price.innerHTML = newprice.toFixed(2);
                 } catch (err) {
                     console.log(err);
                 }

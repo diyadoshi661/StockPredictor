@@ -20,17 +20,11 @@ def upload_data(ticker):
     # Convert date to days
     df['Days'] = (df['Date'] - df['Date'].min()).dt.days
     # Convert to list of tuples to be inserted
-    tuples = [tuple([ticker, 't', row['Date'].iloc[0].strftime('%Y-%m-%d'), row['Close'].iloc[0], row['Days'].iloc[0]]) for index, row in df.iterrows()]
-    cur.executemany('INSERT INTO GraphData VALUES (?, ?, ?, ?, ?)', tuples)
+    tuples = [tuple([ticker, row['Date'].iloc[0].strftime('%Y-%m-%d'), row['Close'].iloc[0], row['Days'].iloc[0]]) for index, row in df.iterrows()]
+    cur.executemany('INSERT INTO GraphData VALUES (?, ?, ?, ?)', tuples)
 
-def upload_graph_link(ticker):
-    """Uploads link to prediction graph to be displayed"""
-    link = prediction_graph(ticker)
-    cur.execute('INSERT INTO GraphLink VALUES (?, ?)', (ticker, link))
-
-# TODO: Update ML algorithm to Random Forest
 def predict_trend(ticker):
-    """Predicts stock trends using LSTM"""
+    """Predicts stock values using LSTM"""
     start_date = '2010-01-01'
     stock_data = yf.download(tickers = ticker, start = start_date)
     # Remove secondary column header
@@ -83,12 +77,16 @@ def predict_trend(ticker):
 
     # Train model
     model = tf.keras.Sequential([
-        tf.keras.layers.LSTM(units=50, activation='tanh', return_sequences=True, input_shape=(x_train.shape[1], 1)),
-        tf.keras.layers.LSTM(units=60, activation='tanh', return_sequences=True),
-        tf.keras.layers.LSTM(units=80, activation='tanh', return_sequences=True),
-        tf.keras.layers.LSTM(units=80, activation='tanh'),
+        tf.keras.layers.LSTM(units=100, activation='tanh', return_sequences=True, input_shape=(x_train.shape[1], 1)),
+        tf.keras.layers.LSTM(units=100, activation='tanh', return_sequences=False),
+        tf.keras.layers.Dense(units=50, activation='relu'),
         tf.keras.layers.Dense(units=1)
     ])
+
+    # Reshape data to add feature dimension
+    x_train = x_train.reshape((x_train.shape[0], x_train.shape[1], 1))
+    x_validation = x_validation.reshape((x_validation.shape[0], x_validation.shape[1], 1))
+    x_test = x_test.reshape((x_test.shape[0], x_test.shape[1], 1))
 
     model.compile(optimizer='adam', loss='mean_squared_error')
     early_stopping = tf.keras.callbacks.EarlyStopping(monitor='val_loss', patience=10, restore_best_weights=True)
@@ -107,13 +105,47 @@ def predict_trend(ticker):
 
     y_predicted = y_predicted * stock_data['Close'].max()
 
-    return y_predicted
+    # Extract the last 100 days of data
+    last_100_days = data_testing_arr[-100:]  # Use normalized data
+
+    # Reshape for the LSTM model (1 sample, 100 timesteps, 1 feature)
+    last_100_days = last_100_days.reshape(1, 100, 1)
+
+    # Predict the next day's price (normalized value)
+    next_day_prediction_normalized = model.predict(last_100_days)
+
+    # Rescale to the original range
+    next_day_prediction = next_day_prediction_normalized[0][0] * stock_data['Close'].max()
+
+    # Get the predicted price for today (last point from the prediction)
+    today_predicted_price = y_predicted[-1].item()  # Use .item() to extract scalar value
+
+    # Extract the last 100 days of normalized data (the last part of your data)
+    last_100_days = data_testing_arr[-100:]
+
+    # Reshape for the LSTM model (1 sample, 100 timesteps, 1 feature)
+    last_100_days = last_100_days.reshape(1, 100, 1)
+
+    # Predict the next day's price (normalized value)
+    next_day_predicted_normalized = model.predict(last_100_days)
+
+    # Rescale to the original range
+    next_day_predicted_price = next_day_predicted_normalized[0][0] * stock_data['Close'].max()
+
+    # Calculate the difference between tomorrow's and today's predicted price
+    price_difference = next_day_predicted_price - today_predicted_price
+
+    # Output the result
+    # print(f"Today's Predicted Price: ${today_predicted_price:.2f}")
+    # print(f"Tomorrow's Predicted Price: ${next_day_predicted_price:.2f}")
+    # print(f"Price Difference (Tomorrow - Today): ${price_difference:.2f}")
+
+    return next_day_predicted_price
 
 def upload_prediction(ticker):
-    """Loads predicted values into database to be graphed later"""
+    """Loads predicted values into database to be displayed"""
     data = predict_trend(ticker)
-    tuples = [tuple([ticker, 'f', float(data[index].item()), index]) for index in range(len(data))]
-    cur.executemany('INSERT INTO GraphData (ticker, actual, value, days) VALUES (?, ?, ?, ?)', tuples)
+    cur.execute('INSERT INTO GraphPrediction (ticker, value) VALUES (?, ?)', tuple([ticker, data]))
 
 # Connect to database for predictor
 connection = sqlite3.connect('data/predictor_database.db')
@@ -121,7 +153,7 @@ cur = connection.cursor()
 
 # Remove all data
 cur.execute('DELETE FROM GraphData')
-cur.execute('DELETE FROM GraphLink')
+cur.execute('DELETE FROM GraphPrediction')
 
 # Updates actual values in database for all tickers
 upload_data('AAPL')
@@ -131,27 +163,11 @@ upload_data('MSFT')
 upload_data('NVDA')
 
 # Updates predicted values in database for all tickers
-# upload_prediction('AAPL')
-# upload_prediction('AMZN')
-# upload_prediction('GOOGL')
-# upload_prediction('MSFT')
-# upload_prediction('NVDA')
-
-# Update links to graphs for all tickers
-upload_graph_link('AAPL')
-upload_graph_link('AMZN')
-upload_graph_link('GOOGL')
-upload_graph_link('MSFT')
-upload_graph_link('NVDA')
+upload_prediction('AAPL')
+upload_prediction('AMZN')
+upload_prediction('GOOGL')
+upload_prediction('MSFT')
+upload_prediction('NVDA')
 
 connection.commit()
 connection.close()
-
-# # Connect to database for simulator
-# connection = sqlite3.connect('data/simulator_database.db')
-# cur = connection.cursor()
-
-# # Execute statements here
-
-# connection.commit()
-# connection.close()
