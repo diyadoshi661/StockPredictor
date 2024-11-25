@@ -4,7 +4,7 @@ from flask import Flask, render_template, request, jsonify, session, flash, redi
 from data_module import *
 
 # Other imports
-from datetime import date, timedelta
+from datetime import date, datetime, timedelta
 
 def get_graph_link(ticker):
     """Fetches link to prediction graph for specified ticker from database"""
@@ -19,18 +19,36 @@ app.secret_key = '98a01296f190c59a173a988b90148a22ec7c5100589a6faf8b246973b563f5
 # Create all routes
 @app.route('/')
 def index():
-    # Dates that can be picked by user to predict up to
-    today = date.today()
-    min_date = today + timedelta(days=1)
-    max_date = today + timedelta(days=2)
+    # Display loading page and update database on load
+    return render_template('loading.html')
 
+@app.route('/home')
+def home():
+    # Display stock prediction values
     conn = get_predictor_db()
     c = conn.cursor()
     c.execute("SELECT value FROM GraphPrediction WHERE ticker = 'AAPL'")
     results = c.fetchall()
     predicted_price = results[0][0]
-
+    # Render final page
+    print("rendering...")
     return render_template('index.html', prediction_graph=get_graph_link('AAPL'), predicted_price=predicted_price)
+
+def update_database():
+    # Check if database is updated
+    conn = get_predictor_db()
+    c = conn.cursor()
+    c.execute("SELECT MAX(time) FROM GraphPrediction")
+    results = c.fetchall()
+    if results[0][0] == None:
+        print("on no data: updating...")
+        update_database()
+    last_updated = datetime.strptime(results[0][0], "%Y-%m-%d %H:%M:%S").date() + timedelta(days=-1)
+    today = date.today()
+    if last_updated < today:
+        print("on outdated: updating...")
+        update_database()
+    conn.close()
 
 # Create post methods
 @app.post('/change-graph')
@@ -148,7 +166,7 @@ def signup():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
-    return redirect('/')
+    return redirect('/home')
 
 @app.post('/buy')
 def buy():

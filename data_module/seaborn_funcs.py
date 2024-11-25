@@ -29,8 +29,6 @@ def stock_graph(ticker):
 
     plt.plot(days, values)
 
-    plt.show()
-
     conn.close()
 
     plt.savefig(img, format='png')

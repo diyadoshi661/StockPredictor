@@ -13,3 +13,6 @@ def get_simulator_db():
     conn = sqlite3.connect('data/simulator_database.db')
     conn.row_factory = sqlite3.Row
     return conn
+
+def update_database():
+    """Updates values in predictor.db"""

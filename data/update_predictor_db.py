@@ -140,7 +140,7 @@ def predict_trend(ticker):
     # print(f"Tomorrow's Predicted Price: ${next_day_predicted_price:.2f}")
     # print(f"Price Difference (Tomorrow - Today): ${price_difference:.2f}")
 
-    return next_day_predicted_price
+    return price_difference
 
 def upload_prediction(ticker):
     """Loads predicted values into database to be displayed"""

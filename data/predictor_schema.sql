@@ -13,5 +13,6 @@ CREATE TABLE GraphData (
 
 CREATE TABLE GraphPrediction (
     ticker TEXT PRIMARY KEY,
-    value REAL NOT NULL
+    value REAL NOT NULL,
+    time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
