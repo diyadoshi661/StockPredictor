@@ -25,16 +25,28 @@
 	</body>
     <script>
         /* Send database update request to server on load */
-        window.addEventListener('load', () => {
-            fetch('/update-database')
-            .catch(error => {
-                console.log(error);
-            });
-            
-            // Redirect after updating database
+        const updateDatabase = async () => {
+            const fetcher = await fetch('/update-database');
+            const data = await fetcher.json();
             window.location.href = "{{ url_for('home') }}";
-        });
+            return data;
+        }
+
+        // window.addEventListener('load', () => {
+        //     await fetch('/update-database')
+        //     .then(() => {
+        //         // Redirect after updating database
+        //         alert();
+        //         window.location.href = "{{ url_for('home') }}";
+        //     })
+        //     .catch(error => {
+        //         console.log(error);
+        //     });
+        // });
+
         window.addEventListener('load', () => {
+
+            updateDatabase()
             setTimeout(() => {
                 document.getElementById('updated-text').innerHTML = "This might take awhile"
             }, 5000);

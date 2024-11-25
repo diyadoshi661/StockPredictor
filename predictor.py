@@ -34,6 +34,7 @@ def home():
     print("rendering...")
     return render_template('index.html', prediction_graph=get_graph_link('AAPL'), predicted_price=predicted_price)
 
+@app.route('/update-database')
 def update_database():
     # Check if database is updated
     conn = get_predictor_db()
@@ -42,13 +43,14 @@ def update_database():
     results = c.fetchall()
     if results[0][0] == None:
         print("on no data: updating...")
-        update_database()
+        update_predictor_database()
     last_updated = datetime.strptime(results[0][0], "%Y-%m-%d %H:%M:%S").date() + timedelta(days=-1)
     today = date.today()
     if last_updated < today:
         print("on outdated: updating...")
-        update_database()
+        update_predictor_database()
     conn.close()
+    return jsonify()
 
 # Create post methods
 @app.post('/change-graph')
