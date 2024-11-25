@@ -161,6 +161,9 @@ def signup():
         # Login to new user's profile
         session['username'] = username
         return redirect(url_for('simulation'))
+    # If user is already logged in
+    if 'username' in session:
+        return redirect(url_for('simulation'))
     return render_template('login.html', signup=True)
     
 @app.route('/logout')
