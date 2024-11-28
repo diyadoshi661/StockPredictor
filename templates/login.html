@@ -1,79 +1,123 @@
 {% extends 'base.html' %} 
-
 {% block title %}Login{% endblock %} 
-
 {% block content %}
-<div id="simulator">
+<div id="simulator" style="font-family: 'Arial', sans-serif; color: #333;">
 	<br />
 	<center>
 		<div
 			id="login-form"
 			class="{% if signup == True %}hidden{% endif %} container border border-black mt-5 pt-3 pb-3"
+			style="max-width: 400px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
 		>
 			<form class="col" method="POST" action="{{ url_for('login') }}">
-                <div id="flash-messages-login">
+                <div id="flash-messages-login" style="margin-bottom: 15px;">
                     {% for message in get_flashed_messages() %}
-                    <div class="alert alert-danger">{{ message }}</div>
+                    <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 10px; border-radius: 4px;">{{ message }}</div>
                     {% endfor %}
                 </div>
-				<div class="row m-3">
-					<label class="col" for="username-login">Username</label>
-					<input class="col" id="username-login" name="username-login" />
+				<div class="row m-3" style="margin-bottom: 15px;">
+					<label class="col" for="username-login" style="font-size: 16px; margin-bottom: 5px; display: block;">Username</label>
+					<input 
+						class="col" 
+						id="username-login" 
+						name="username-login" 
+						style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;"
+					/>
 				</div>
-				<div class="row m-3">
-					<label class="col" for="password-login">Password</label>
+				<div class="row m-3" style="margin-bottom: 15px;">
+					<label class="col" for="password-login" style="font-size: 16px; margin-bottom: 5px; display: block;">Password</label>
 					<input
 						class="col"
 						id="password-login"
 						name="password-login"
 						type="password"
+						style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;"
 					/>
 				</div>
-				<button type="submit">Login</button>
+				<button 
+					type="submit" 
+					style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;"
+					onmouseover="this.style.backgroundColor='#0056b3'"
+					onmouseout="this.style.backgroundColor='#007bff'"
+				>
+					Login
+				</button>
 			</form>
-			<p id="switch-form-msg">
+			<p 
+				id="switch-form-msg" 
+				style="margin-top: 15px; text-align: center; font-size: 14px;"
+			>
 				Don't have an account? Sign up
-				<span id="switch-form" onclick="toggle_forms()">here</span>.
+				<span 
+					id="switch-form" 
+					onclick="toggle_forms()" 
+					style="color: #007bff; cursor: pointer; text-decoration: underline;"
+				>
+					here
+				</span>.
 			</p>
 		</div>
-
 		<div
 			id="signup-form"
 			class="{% if signup == False %}hidden{% endif %} container border border-black mt-5 pt-3 pb-3"
+			style="max-width: 400px; background-color: #f9f9f9; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1);"
 		>
 			<form class="col" method="POST" action="{{ url_for('signup') }}">
-                <div id="flash-messages-signup">
+                <div id="flash-messages-signup" style="margin-bottom: 15px;">
                     {% for message in get_flashed_messages() %}
-                        <div class="alert alert-danger">{{ message }}</div>
+                        <div class="alert alert-danger" style="color: #721c24; background-color: #f8d7da; border-color: #f5c6cb; padding: 10px; border-radius: 4px;">{{ message }}</div>
                     {% endfor %}
                 </div>
-				<div class="row m-3">
-					<label class="col" for="username-signup">Username</label>
-					<input class="col" id="username-signup" name="username-signup" />
+				<div class="row m-3" style="margin-bottom: 15px;">
+					<label class="col" for="username-signup" style="font-size: 16px; margin-bottom: 5px; display: block;">Username</label>
+					<input 
+						class="col" 
+						id="username-signup" 
+						name="username-signup"
+						style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;"
+					/>
 				</div>
-				<div class="row m-3">
-					<label class="col" for="password-signup">Password</label>
+				<div class="row m-3" style="margin-bottom: 15px;">
+					<label class="col" for="password-signup" style="font-size: 16px; margin-bottom: 5px; display: block;">Password</label>
 					<input
 						class="col"
 						id="password-signup"
 						name="password-signup"
 						type="password"
+						style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;"
 					/>
 				</div>
-				<div class="row m-3">
-					<label class="col" for="password-again">Retype Password</label>
+				<div class="row m-3" style="margin-bottom: 15px;">
+					<label class="col" for="password-again" style="font-size: 16px; margin-bottom: 5px; display: block;">Retype Password</label>
 					<input
 						class="col"
 						id="password-again"
 						name="password-again"
 						type="password"
+						style="width: 100%; padding: 8px; border: 1px solid #ced4da; border-radius: 4px; font-size: 16px;"
 					/>
 				</div>
-				<button type="submit">Signup</button>
+				<button 
+					type="submit" 
+					style="width: 100%; padding: 10px; background-color: #007bff; color: white; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: background-color 0.3s ease;"
+					onmouseover="this.style.backgroundColor='#0056b3'"
+					onmouseout="this.style.backgroundColor='#007bff'"
+				>
+					Signup
+				</button>
 			</form>
-			<p id="switch-form-msg">
+			<p 
+				id="switch-form-msg" 
+				style="margin-top: 15px; text-align: center; font-size: 14px;"
+			>
 				Already have an account? Login
-				<span id="switch-form" onclick="toggle_forms()">here</span>.
+				<span 
+					id="switch-form" 
+					onclick="toggle_forms()" 
+					style="color: #007bff; cursor: pointer; text-decoration: underline;"
+				>
+					here
+				</span>.
 			</p>
 		</div>
 		<script>

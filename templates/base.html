@@ -9,6 +9,30 @@
 			integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO"
 			crossorigin="anonymous"
 		/>
+		<style>
+			body {
+				font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+			}
+			.navbar {
+				display: flex;
+				justify-content: center;
+				align-items: center;
+				background-color: #f8f9fa;
+			}
+			.navbar h2 a {
+				color: #343a40;
+				font-size: 1.5rem;
+				text-decoration: none;
+			}
+			.navbar h2 a:hover {
+				color: #007bff;
+			}
+			#page-contents {
+				max-width: 1200px;
+				margin: 0 auto;
+				padding: 0 15px;
+			}
+		</style>
 		<link rel="stylesheet" href="../static/css/style.css" />
 		<title>{% block title %} {% endblock %}</title>
 	</head>

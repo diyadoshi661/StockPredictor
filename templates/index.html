@@ -7,32 +7,45 @@
 {% endblock %}
 
 {% block content %}
-    <div id="choose-ticker">
-        <br />
-        <form id="ticker-form">
-            <label for="ticker">Ticker Symbol: </label>
-            <select id="ticker">
-                <option value="AAPL">AAPL</option>
-                <option value="AMZN">AMZN</option>
-                <option value="GOOGL">GOOGL</option>
-                <option value="MSFT">MSFT</option>
-                <option value="NVDA">NVDA</option>
-            </select>
-        </form>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8">
+                <h3 class="text-center">Stock Price Predictor</h3>
+                <hr>
+                
+                <div id="choose-ticker" class="form-group">
+                    <label for="ticker">Choose a Ticker Symbol:</label>
+                    <select id="ticker" class="form-control">
+                        <option value="AAPL">AAPL</option>
+                        <option value="AMZN">AMZN</option>
+                        <option value="GOOGL">GOOGL</option>
+                        <option value="MSFT">MSFT</option>
+                        <option value="NVDA">NVDA</option>
+                    </select>
+                </div>
+
+                <div id="graph-prediction" class="text-center mt-4">
+                    <img id="prediction-graph" src="data:image/png;base64,{{ prediction_graph }}" class="img-fluid" />
+                </div>
+
+                <div id="predicted-price" class="mt-3 text-center">
+                    <h4>Tomorrow's Predicted Price Difference:</h4>
+                    <p class="display-4 text-success">$<span id="price-value">{{ predicted_price | round(2) }}</span></p>
+                </div>
+            </div>
+        </div>
     </div>
-    <div id="graph-prediction">
-        <img id="prediction-graph" src="data:image/png;base64,{{ prediction_graph }}">
-    </div>
-    <div id="predicted-price">
-        <p id="price">Tomorrow's predicted price difference: $<span id="price-value">{{ predicted_price | round(2) }}</span></p>
-    </div>
+
     <script type="text/javascript">
         (() => {
             /* Sends ticker to server to return new graph */
             const getGraph = async (value) => {
                 const data = await fetch('/change-graph', {
-                    method: 'post',
-                    body: JSON.stringify({ ticker: value })
+                    method: 'POST',
+                    body: JSON.stringify({ ticker: value }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }).then(res => res.ok && res.json());
                 return data;
             }
@@ -40,14 +53,17 @@
             /* Sends data to server to return price */
             const getPrice = async (value) => {
                 const data = await fetch('/get-predicted-price', {
-                    method: 'post',
-                    body: JSON.stringify({ ticker: value })
+                    method: 'POST',
+                    body: JSON.stringify({ ticker: value }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
                 }).then(res => res.ok && res.json());
                 return data;
             }
 
             /* Add listeners to refresh graph */
-            ticker.addEventListener('change', async function() {
+            document.getElementById('ticker').addEventListener('change', async function() {
                 try {
                     const newplot = await getGraph(this.value);
                     const newprice = await getPrice(this.value);
@@ -56,9 +72,9 @@
                     const price = document.getElementById('price-value');
                     price.innerHTML = newprice.toFixed(2);
                 } catch (err) {
-                    console.log(err);
+                    console.error(err);
                 }
-            })
+            });
         })();
     </script>
 {% endblock %}

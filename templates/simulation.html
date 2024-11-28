@@ -1,107 +1,195 @@
-{% extends 'base.html' %} 
+{% extends 'base.html' %}
+{% block title %}Stock Simulator{% endblock %}
 
-{% block title %}Stock Simulator{% endblock %} 
+{% block head %}
+<style>
+    body {
+        background-color: #f4f6f9;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    }
+    #simulator {
+        background-color: white;
+        border-radius: 12px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        margin: 2rem auto;
+        max-width: 900px;
+        padding: 2rem;
+    }
+    .card {
+        border-radius: 10px;
+        margin-bottom: 1rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+    }
+    #user-info .card {
+        height: 250px;
+        overflow-y: auto;
+    }
+    #logout {
+        text-align: right;
+        margin-bottom: 1rem;
+    }
+    #logout a {
+        color: #6c757d;
+        text-decoration: none;
+        transition: color 0.3s ease;
+    }
+    #logout a:hover {
+        color: #343a40;
+    }
+    .btn-primary, .btn-danger {
+        transition: all 0.3s ease;
+        border-radius: 6px;
+        text-transform: uppercase;
+        font-weight: 600;
+        letter-spacing: 0.5px;
+    }
+    #action-buttons button {
+        margin: 0 0.5rem;
+        padding: 0.5rem 1.5rem;
+    }
+    .transaction-history {
+        max-height: 200px;
+        overflow-y: auto;
+    }
+    .transaction-history p {
+        margin-bottom: 0.25rem;
+        font-size: 0.9rem;
+    }
+    select, input {
+        border-radius: 4px;
+        border: 1px solid #ced4da;
+        padding: 0.375rem 0.75rem;
+    }
+    .alert {
+        border-radius: 6px;
+    }
+</style>
+{% endblock %}
 
 {% block nav %}
-<h4 id="logout"><a href="/logout">Logout</a></h4>
-{% endblock %} 
+<div id="logout" class="container">
+    <a href="/logout" class="text-muted">Logout</a>
+</div>
+{% endblock %}
 
 {% block content %}
-<div id="simulator">
-	<center>
-		<br />
-		<h4>{{ username }}'s Profile</h4>
-		<br />
-		<div id="simulator-content" class="container">
-			<div id="user-info" class="row">
-				<div
-					id="user-assets"
-					class="col border border-black m-3 pt-3 pb-3 pl-5"
-					style="width: 30em; max-height: 200px;"
-				>
-					<p class="row mb-0">Current Balance: ${{ balance }}</p>
-					<p class="row mb-0">Current Assets:</p>
-					{% for a in assets %}
-						<p class="row mb-0">&emsp;&emsp;{{ a.stock_symbol }}: {{ a.quantity_owned }}</p>
-					{% endfor %}
-				</div>
-				<div
-					id="user-transactions"
-					class="col border border-black m-3 pt-3 pb-3 pl-5 pre-scrollable"
-					style="width: 30em; max-height: 200px"
-				>
-					{% if history|length == 0 %}
-						<p class="row">No Previous Transactions</p>
-					{% else %}
-						<p class="row">Transaction History:</p>
-						{% for t in history | reverse %}
-							<p class="row">{{ t.time }} >&emsp;{{ t.action }} {{ t.stock_symbol }} x{{ t.quantity }} at ${{ t.price | round(2) }}</p>
-						{% endfor %} {% endif %}
-				</div>
-			</div>
-			<div class="row">
-				<div class="col"></div>
-				<div id="user-actions" class="col border border-black mt-5 p-3">
-					<form class="col" method="POST" action="">
-						{% for message in get_flashed_messages() %}
-							<div class="alert alert-danger">{{ message }}</div>
-						{% endfor %}
-						<label for="ticker">Ticker Symbol: &ensp;</label>
-						<select name="ticker" id="ticker">
-							<option value="AAPL">AAPL</option>
-							<option value="AMZN">AMZN</option>
-							<option value="GOOGL">GOOGL</option>
-							<option value="MSFT">MSFT</option>
-							<option value="NVDA">NVDA</option>
-						</select>
-						<label for="quantity">Quantity: &ensp;</label>
-						<input id="quantity" name="quantity" type="number" value="1" min="1" class="w-25" />
-						<p>Price:  $<span id="price">{{ price | round(2) }}</span></p>
-						<div id="action-buttons">
-							<button type="submit" formaction="{{ url_for('buy') }}" class="rounded mr-1">Buy</button>
-							<button type="submit" formaction="{{ url_for('sell') }}" class="rounded ml-1">Sell</button>
-						</div>
-					</form>
-				</div>
-				<div class="col"></div>
-			</div>
-		</div>
-	</center>
+<div id="simulator" class="container">
+    <div class="row">
+        <div class="col-12">
+            <h3 class="text-center mb-4">{{ username }}'s Trading Dashboard</h3>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">Assets Overview</h5>
+                </div>
+                <div class="card-body">
+                    <p class="card-text"><strong>Current Balance:</strong> ${{ balance }}</p>
+                    <h6>Current Holdings:</h6>
+                    {% if assets|length == 0 %}
+                        <p class="text-muted">No stocks currently owned</p>
+                    {% else %}
+                        <ul class="list-unstyled">
+                        {% for a in assets %}
+                            <li>{{ a.stock_symbol }}: {{ a.quantity_owned }} shares</li>
+                        {% endfor %}
+                        </ul>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-6">
+            <div class="card mb-4">
+                <div class="card-header bg-info text-white">
+                    <h5 class="mb-0">Transaction History</h5>
+                </div>
+                <div class="card-body transaction-history">
+                    {% if history|length == 0 %}
+                        <p class="text-muted">No Previous Transactions</p>
+                    {% else %}
+                        {% for t in history | reverse %}
+                            <p>
+                                <span class="text-muted">{{ t.time }}</span> 
+                                {{ t.action }} {{ t.stock_symbol }} x{{ t.quantity }} 
+                                <strong>@${{ t.price | round(2) }}</strong>
+                            </p>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-success text-white">
+                    <h5 class="mb-0">Trade Stocks</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="">
+                        {% for message in get_flashed_messages() %}
+                            <div class="alert alert-danger">{{ message }}</div>
+                        {% endfor %}
+                        
+                        <div class="form-row align-items-center">
+                            <div class="col-md-4 mb-2">
+                                <label for="ticker">Ticker Symbol</label>
+                                <select name="ticker" id="ticker" class="form-control">
+                                    <option value="AAPL">AAPL</option>
+                                    <option value="AMZN">AMZN</option>
+                                    <option value="GOOGL">GOOGL</option>
+                                    <option value="MSFT">MSFT</option>
+                                    <option value="NVDA">NVDA</option>
+                                </select>
+                            </div>
+                            
+                            <div class="col-md-4 mb-2">
+                                <label for="quantity">Quantity</label>
+                                <input id="quantity" name="quantity" type="number" 
+                                       value="1" min="1" class="form-control" />
+                            </div>
+                            
+                            <div class="col-md-4 mb-2">
+                                <label>Current Price</label>
+                                <p class="form-control-plaintext">
+                                    $<span id="price">{{ price | round(2) }}</span>
+                                </p>
+                            </div>
+                        </div>
+                        
+                        <div id="action-buttons" class="text-center mt-3">
+                            <button type="submit" formaction="{{ url_for('buy') }}" 
+                                    class="btn btn-primary">Buy</button>
+                            <button type="submit" formaction="{{ url_for('sell') }}" 
+                                    class="btn btn-danger">Sell</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+{% endblock %}
 
 <script type="text/javascript">
-	(() => {
-		/* Sends data to server to return price */
-		const getPrice = async (value) => {
-			const data = await fetch('/get-price', {
-				method: 'post',
-				body: JSON.stringify({ ticker: value })
-			}).then(res => res.ok && res.json());
-			return data;
-		}
+    (() => {
+        /* Sends data to server to return price */
+        const getPrice = async (value) => {
+            const data = await fetch('/get-price', {
+                method: 'post',
+                body: JSON.stringify({ ticker: value })
+            }).then(res => res.ok && res.json());
+            return data;
+        }
 
-		/* Add listeners to refresh price */
-		ticker.addEventListener('change', async function() {
-			try {
-				const newPrice = await getPrice(this.value);
-				const price = document.getElementById('price');
-				const quantity = document.getElementById('quantity').value;
-				price.innerHTML = (newPrice * quantity).toFixed(2);
-			} catch (err) {
-				console.log(err);
-			}
-		})
-
-		quantity.addEventListener('change', async function() {
-			try {
-				const newPrice = await getPrice(document.getElementById('ticker').value);
-				const price = document.getElementById('price');
-				const quantity = document.getElementById('quantity').value;
-				price.innerHTML = (newPrice * quantity).toFixed(2);
-			} catch (err) {
-				console.log(err);
-			}
-		})
-	})();
+        document.getElementById('ticker').addEventListener('change', async (e) => {
+            const price = await getPrice(e.target.value);
+            document.getElementById('price').textContent = price ? price.toFixed(2) : 'N/A';
+        });
+    })();
 </script>
-{% endblock %}
