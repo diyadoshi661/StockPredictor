@@ -5,6 +5,7 @@ from data_module import *
 
 # Other imports
 from datetime import date, datetime, timedelta
+import os
 
 def get_graph_link(ticker):
     """Fetches link to prediction graph for specified ticker from database"""
@@ -14,7 +15,7 @@ def get_graph_link(ticker):
 # Create application
 app = Flask(__name__)
 # TODO: Update secret key and create env file
-app.secret_key = '98a01296f190c59a173a988b90148a22ec7c5100589a6faf8b246973b563f577'
+app.secret_key = os.getenv("SECRET_KEY")
 
 # Create all routes
 @app.route('/')
