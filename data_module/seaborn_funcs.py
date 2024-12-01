@@ -29,6 +29,11 @@ def stock_graph(ticker):
 
     plt.plot(days, values)
 
+    # Styling
+    plt.xticks([])
+    plt.xlabel("Time")
+    plt.ylabel("Price")
+
     conn.close()
 
     plt.savefig(img, format='png')
