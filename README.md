@@ -8,23 +8,26 @@ Also, practice investing smartly in the stock market.
 
 Create a folder containing all files.
 
-Create a virtual environment in the folder using the command
+Create a virtual environment in the folder using the command:
 ```
 python -m venv my-env
 ```
-, then activate the virtual environment using the script belonging to your operating system.
+Then, activate the virtual environment using the script belonging to your operating system.
 
-Run 
+To install all necessary modules, run the following command:
 ```
 pip install -r requirements.txt
 ```
-to install all necessary modules.
 
-Run
+To create the necessary databases, run:
+```
+python data/init_db.py
+```
+
+To run the application locally, use:
 ```
 flask --app predictor run
 ```
-to run the application locally.
 
 Then navigate to localhost:5000
 
@@ -33,3 +36,4 @@ A loading screen should appear. The first load may take up to twenty minutes so 
 After the initial update to the database, the application should allow the user to view stock predictions, as well as participate in the stock simulation as long as they have an associated account.
 
 # Live Link
+https://stock-predictor-624177250442.us-west1.run.app/home
