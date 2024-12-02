@@ -27,7 +27,7 @@
 
                 <div id="predicted-price" class="text-center">
                     <h4>Tomorrow's Predicted Price Difference:</h4>
-                    <p class="display-4 text-success">$<span id="price-value">{{ predicted_price | round(2) }}</span></p>
+                    <p class="display-4">$<span id="price-value" class="{% if predicted_price < 0 %}text-danger{% else %}text-success{% endif %}">{{ predicted_price | round(2) }}</span></p>
                 </div>
 
                 <div id="graph-prediction" class="text-center">
@@ -71,6 +71,11 @@
                     const graph = document.getElementById('prediction-graph');
                     graph.src = "data:image/png;base64," + newplot;
                     const price = document.getElementById('price-value');
+                    if (newprice < 0) {
+                        price.classList = "text-danger";
+                    } else {
+                        price.classList = "text-success";
+                    }
                     price.innerHTML = newprice.toFixed(2);
                 } catch (err) {
                     console.error(err);
