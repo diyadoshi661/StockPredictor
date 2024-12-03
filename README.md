@@ -12,7 +12,7 @@ Create a virtual environment in the folder using the command:
 ```
 python -m venv <my-env>
 ```
-<my-env> should be replaced by the folder name.
+\<my-env\> should be replaced by the folder name.
 
 Then, activate the virtual environment using the script belonging to your operating system:
 
