@@ -10,23 +10,25 @@ Create a folder containing all files.
 
 Create a virtual environment in the folder using the command:
 ```
-python -m venv my-env
+python -m venv <my-env>
 ```
+<my-env> should be replaced by the folder name.
+
 Then, activate the virtual environment using the script belonging to your operating system:
 
 For Linux Based OS Or Mac-OS:
 ```
-source my_env/bin/activate
+source <my_env>/bin/activate
 ```
 
 For Windows With CMD:
 ```
-.\my_env\Scripts\activate.bat
+.\<my_env>\Scripts\activate.bat
 ```
 
 For Windows With Powershell:
 ```
-.\my_env\Scripts\activate.ps1
+.\<my_env>\Scripts\activate.ps1
 ```
 
 If not already present, add a file called '.env' to the main directory with the following content:
