@@ -8,7 +8,7 @@ Also, practice investing smartly in the stock market.
 
 Create a folder containing all files.
 
-Add a file called '.env' to the main directory with the following content:
+If not already present, add a file called '.env' to the main directory with the following content:
 ```
 SECRET_KEY="<YOUR-SECRET-KEY>"
 ```
