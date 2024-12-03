@@ -12,7 +12,7 @@ Create a virtual environment in the folder using the command:
 ```
 python -m venv <my-env>
 ```
-\<my-env\> should be replaced by the folder name.
+\<my-env> should be replaced by the folder name.
 
 Then, activate the virtual environment using the script belonging to your operating system:
 
@@ -35,7 +35,7 @@ If not already present, add a file called '.env' to the main directory with the 
 ```
 SECRET_KEY="<YOUR-SECRET-KEY>"
 ```
-Replace <YOUR-SECRET-KEY> with your own key to enable flask sessions.
+Replace \<YOUR-SECRET-KEY> with your own key to enable flask sessions.
 
 To install all necessary modules, run the following command:
 ```
