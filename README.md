@@ -18,7 +18,22 @@ Create a virtual environment in the folder using the command:
 ```
 python -m venv my-env
 ```
-Then, activate the virtual environment using the script belonging to your operating system.
+Then, activate the virtual environment using the script belonging to your operating system:
+
+For Linux Based OS Or Mac-OS:
+```
+source my_env/bin/activate
+```
+
+For Windows With CMD:
+```
+.\my_env\Scripts\activate.bat
+```
+
+For Windows With Powershell:
+```
+.\my_env\Scripts\activate.ps1
+```
 
 To install all necessary modules, run the following command:
 ```
