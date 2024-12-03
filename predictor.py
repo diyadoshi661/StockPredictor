@@ -14,18 +14,17 @@ def get_graph_link(ticker):
 
 # Create application
 app = Flask(__name__)
-# TODO: Update secret key and create env file
 app.secret_key = os.getenv("SECRET_KEY")
 
 # Create all routes
 @app.route('/')
 def index():
-    # Display loading page and update database on load
+    """Displays loading page and update database on load"""
     return render_template('loading.html')
 
 @app.route('/home')
 def home():
-    # Display stock prediction values
+    """Display stock prediction values"""
     conn = get_predictor_db()
     c = conn.cursor()
     c.execute("SELECT value FROM GraphPrediction WHERE ticker = 'AAPL'")
@@ -36,7 +35,7 @@ def home():
 
 @app.route('/update-database')
 def update_database():
-    # Check if database is updated
+    """Check if database is updated, otherwise update it, then redirect to home page"""
     conn = get_predictor_db()
     c = conn.cursor()
     c.execute("SELECT MAX(time) FROM GraphPrediction")
@@ -54,6 +53,7 @@ def update_database():
 # Create post methods
 @app.post('/change-graph')
 def change_graph():
+    """Send new graph for selected ticker to display to user"""
     try:
         ticker = request.get_json(force=True).get('ticker')
         prediction_graph = get_graph_link(ticker)
@@ -64,6 +64,7 @@ def change_graph():
 
 @app.post('/get-predicted-price')
 def get_predicted_price():
+    """Send predicted price for selected ticker to display to user"""
     try:
         ticker = request.get_json(force=True).get('ticker')
         conn = get_predictor_db()
@@ -79,6 +80,7 @@ def get_predicted_price():
     
 @app.route('/simulation')
 def simulation():
+    """Show mock trading simulation"""
     if 'username' in session:
         # Fetch user's assets and history
         conn = get_simulator_db()
@@ -103,6 +105,7 @@ def simulation():
 
 @app.route('/login', methods=["GET", "POST"])
 def login():
+    """Allows user to log into their mock trading account"""
     # If user is trying to login
     if request.method == "POST":
         username = request.form.get('username-login')
@@ -134,6 +137,7 @@ def login():
 
 @app.route('/signup', methods=["GET", "POST"])
 def signup():
+    """Allows users to sign up for mock trading account"""
     # If user is trying to signup
     if request.method == "POST":
         username = request.form['username-signup']
@@ -169,11 +173,13 @@ def signup():
     
 @app.route('/logout')
 def logout():
+    """Logs user out from mock trading account and redirects to home page"""
     session.pop('username', None)
     return redirect('/home')
 
 @app.post('/buy')
 def buy():
+    """Users can purchase a variable amount of stock of their choice"""
     # Get ticker
     ticker = request.form.get('ticker')
     # Get quantity
@@ -214,6 +220,7 @@ def buy():
 
 @app.post('/sell')
 def sell():
+    """Users can sell a variable amount of stock of their choice"""
     # Get ticker
     ticker = request.form.get('ticker')
     # Get quantity
@@ -254,6 +261,7 @@ def sell():
 
 @app.post('/get-price')
 def get_price():
+    """Gets the price of x amount of stock to display to user"""
     try:
         ticker = request.get_json(force=True).get('ticker')
         conn = get_predictor_db()
@@ -269,4 +277,5 @@ def get_price():
 
 @app.errorhandler(404)
 def page_not_found(e):
+    """Render 404 page"""
     return render_template('404.html'), 404
