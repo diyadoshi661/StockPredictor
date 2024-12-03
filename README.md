@@ -8,12 +8,6 @@ Also, practice investing smartly in the stock market.
 
 Create a folder containing all files.
 
-If not already present, add a file called '.env' to the main directory with the following content:
-```
-SECRET_KEY="<YOUR-SECRET-KEY>"
-```
-Replace <YOUR-SECRET-KEY> with your own key to enable flask sessions.
-
 Create a virtual environment in the folder using the command:
 ```
 python -m venv my-env
@@ -34,6 +28,12 @@ For Windows With Powershell:
 ```
 .\my_env\Scripts\activate.ps1
 ```
+
+If not already present, add a file called '.env' to the main directory with the following content:
+```
+SECRET_KEY="<YOUR-SECRET-KEY>"
+```
+Replace <YOUR-SECRET-KEY> with your own key to enable flask sessions.
 
 To install all necessary modules, run the following command:
 ```
