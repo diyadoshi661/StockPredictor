@@ -8,6 +8,12 @@ Also, practice investing smartly in the stock market.
 
 Create a folder containing all files.
 
+Add a file called '.env' to the main directory with the following content:
+```
+SECRET_KEY="<YOUR-SECRET-KEY>"
+```
+Replace <YOUR-SECRET-KEY> with your own key to enable flask sessions.
+
 Create a virtual environment in the folder using the command:
 ```
 python -m venv my-env
